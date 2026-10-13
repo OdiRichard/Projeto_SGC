@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Produtos{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <h1 class="h3 mb-0">Produtos</h1>
+    <a href="{{ url_for('produto_novo') }}" class="btn btn-dark">+ Novo produto</a>
+</div>
+
+<form method="get" action="{{ url_for('produtos') }}" class="row g-2 mb-3" role="search">
+    <div class="col-12 col-md">
+        <input type="search" class="form-control" name="busca" value="{{ busca }}" maxlength="100"
+               placeholder="Buscar produto por nome" aria-label="Buscar produto por nome">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-dark">Buscar</button>
+        {% if busca %}
+        <a href="{{ url_for('produtos') }}" class="btn btn-outline-secondary">Limpar</a>
+        {% endif %}
+    </div>
+</form>
+{% if busca %}
+<p class="text-muted small">{{ produtos|length }} resultado(s) para &ldquo;{{ busca }}&rdquo;.</p>
+{% endif %}
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th class="text-end">Preço</th>
+                    <th class="text-end">Estoque</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>
+                        {{ produto.nome }}
+                        {% if produto.descricao %}
+                        <div class="small text-muted">{{ produto.descricao|truncate(70) }}</div>
+                        {% endif %}
+                    </td>
+                    <td>{{ produto.categoria or '-' }}</td>
+                    <td class="text-end text-nowrap">{{ produto.preco|moeda }}</td>
+                    <td class="text-end">
+                        {% if produto.estoque == 0 %}
+                        <span class="badge text-bg-danger">0</span>
+                        {% else %}
+                        {{ produto.estoque }}
+                        {% endif %}
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <a href="{{ url_for('produto_editar', produto_id=produto.id) }}"
+                           class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="modal" data-bs-target="#modalExcluir"
+                                data-nome="{{ produto.nome }}"
+                                data-url="{{ url_for('produto_excluir', produto_id=produto.id) }}">
+                            Excluir
+                        </button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        {% if busca %}
+                        Nenhum produto encontrado para &ldquo;{{ busca }}&rdquo;.
+                        {% else %}
+                        Nenhum produto cadastrado ainda.
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Confirmação de exclusão -->
+<div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="tituloModalExcluir" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="tituloModalExcluir">Confirmar exclusão</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                Deseja realmente excluir o produto <strong id="nomeExcluir"></strong>?
+                Esta ação não pode ser desfeita.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="post" id="formExcluir" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Preenche o modal com o nome e o endereço do produto clicado
+    document.getElementById('modalExcluir').addEventListener('show.bs.modal', function (evento) {
+        var botao = evento.relatedTarget;
+        document.getElementById('nomeExcluir').textContent = botao.getAttribute('data-nome');
+        document.getElementById('formExcluir').action = botao.getAttribute('data-url');
+    });
+</script>
+{% endblock %}

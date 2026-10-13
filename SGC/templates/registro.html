@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-4 text-center">Criar conta</h1>
+                <form method="post" action="{{ url_for('registro') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuário</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                               value="{{ username }}" required minlength="3" maxlength="30"
+                               autofocus autocomplete="username">
+                        <div class="form-text">De 3 a 30 caracteres: letras, números e _.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               value="{{ email }}" required maxlength="120" autocomplete="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="senha" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="senha" name="senha"
+                               required minlength="6" maxlength="128" autocomplete="new-password">
+                        <div class="form-text">Mínimo de 6 caracteres.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmacao" class="form-label">Confirmar senha</label>
+                        <input type="password" class="form-control" id="confirmacao" name="confirmacao"
+                               required minlength="6" maxlength="128" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100">Registrar</button>
+                </form>
+                <p class="text-center text-muted mt-3 mb-0">
+                    Já tem conta? <a href="{{ url_for('login') }}">Entrar</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

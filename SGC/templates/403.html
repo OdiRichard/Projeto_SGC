@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Acesso negado{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <p class="display-1 fw-bold text-danger mb-0">403</p>
+    <h1 class="h3 mb-3">Acesso negado</h1>
+    <p class="text-muted">
+        Você não tem permissão para realizar esta ação.
+        Sua sessão pode ter expirado: faça login novamente e tente de novo.
+    </p>
+    <a href="{{ url_for('login') }}" class="btn btn-dark">Ir para o login</a>
+</div>
+{% endblock %}

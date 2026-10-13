@@ -16,6 +16,9 @@ instance/
 .env
 .flaskenv
 
+# Logs
+*.log
+
 # Editor e sistema
 .vscode/
 .idea/
